@@ -4,7 +4,6 @@ import CalculatorForm from './components/CalculatorForm';
 import ResultsTable from './components/ResultsTable';
 import CostVisualization from './components/CostVisualization';
 import { CalculationParams, Provider, ThemeConfig } from './types';
-import { MoonIcon, SunIcon } from '@heroicons/react/20/solid';
 
 function App() {
   const [params, setParams] = useState<CalculationParams>({

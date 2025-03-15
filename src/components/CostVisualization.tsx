@@ -1,6 +1,5 @@
-import { CalculationParams, Provider } from '../types';
+import { ICostVisualization } from '../types';
 import { Bar } from 'react-chartjs-2';
-import { getModelsByProvider } from '../data/modelPricing';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,9 +7,11 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartOptions
 } from 'chart.js';
 import { calculateCosts } from '../utils/costCalculator';
+import { getModelsByProvider } from '../data/modelPricing';
 
 // Register ChartJS components
 ChartJS.register(
@@ -22,13 +23,11 @@ ChartJS.register(
   Legend
 );
 
-interface CostVisualizationProps {
-  params: CalculationParams;
-  selectedProviders: Provider[];
-  darkMode: boolean;
-}
-
-export default function CostVisualization({ params, selectedProviders, darkMode }: CostVisualizationProps) {
+export default function CostVisualization({
+  params,
+  selectedProviders,
+  darkMode
+}: ICostVisualization) {
   // Get models and calculate costs
   const models = selectedProviders.flatMap(provider => getModelsByProvider(provider));
   const modelData = models.map(model => {
@@ -88,13 +87,13 @@ export default function CostVisualization({ params, selectedProviders, darkMode 
     ]
   };
 
-  const options = {
-    indexAxis: 'y' as const, // This makes the bars horizontal
+  const options: ChartOptions<'bar'> = {
+    indexAxis: 'y',
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'bottom' as const,
+        position: 'bottom',
         labels: {
           padding: 20,
           usePointStyle: true,
@@ -113,26 +112,11 @@ export default function CostVisualization({ params, selectedProviders, darkMode 
           bottom: 20
         },
         color: darkMode ? '#e5e7eb' : '#374151'
-      },
-      tooltip: {
-        callbacks: {
-          label: (context: any) => {
-            const value = context.parsed.x; // Using x because the chart is horizontal
-            return `${context.dataset.label}: ${formatCurrency(value)}`;
-          },
-          title: (tooltipItems: any[]) => {
-            return tooltipItems[0].label.split(' (')[0]; // Show only model name in tooltip
-          }
-        },
-        backgroundColor: darkMode ? 'rgba(17, 24, 39, 0.8)' : 'rgba(255, 255, 255, 0.8)',
-        titleColor: darkMode ? '#e5e7eb' : '#374151',
-        bodyColor: darkMode ? '#e5e7eb' : '#374151',
-        borderColor: darkMode ? 'rgba(75, 85, 99, 0.2)' : 'rgba(0, 0, 0, 0.1)',
-        borderWidth: 1
       }
     },
     scales: {
       x: {
+        type: 'linear',
         stacked: true,
         title: {
           display: true,
@@ -143,13 +127,17 @@ export default function CostVisualization({ params, selectedProviders, darkMode 
           }
         },
         ticks: {
-          callback: (value: number) => formatCurrency(value),
+          callback: function(value) {
+            if (typeof value === 'number') {
+              return formatCurrency(value);
+            }
+            return '';
+          },
           color: darkMode ? '#e5e7eb' : '#374151'
         },
         grid: {
           color: darkMode ? 'rgba(75, 85, 99, 0.2)' : 'rgba(0, 0, 0, 0.1)',
-          drawBorder: true,
-          drawOnChartArea: true,
+          display: true,
           drawTicks: true
         }
       },
@@ -157,18 +145,13 @@ export default function CostVisualization({ params, selectedProviders, darkMode 
         stacked: true,
         ticks: {
           font: {
-            size: 11 // Adjust based on number of models
+            size: 11
           },
           color: darkMode ? '#e5e7eb' : '#374151'
         },
         grid: {
           display: false
         }
-      }
-    },
-    layout: {
-      padding: {
-        right: 20
       }
     }
   };

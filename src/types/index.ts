@@ -22,4 +22,24 @@ export interface CalculationParams {
 
 export interface ThemeConfig {
   darkMode: boolean;
+}
+
+export interface ICalculatorForm {
+  params: CalculationParams;
+  onParamsChange: (params: CalculationParams) => void;
+  selectedProviders: Provider[];
+  onProvidersChange: (providers: Provider[]) => void;
+  darkMode: boolean;
+}
+
+export interface IResultsTable {
+  params: CalculationParams;
+  selectedProviders: Provider[];
+  darkMode: boolean;
+}
+
+export interface ICostVisualization {
+  params: CalculationParams;
+  selectedProviders: Provider[];
+  darkMode: boolean;
 } 

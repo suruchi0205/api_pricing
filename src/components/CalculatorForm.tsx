@@ -1,13 +1,5 @@
-import { useState } from 'react';
 import { Switch } from '@headlessui/react';
-import { CalculationParams, Provider, Currency } from '../types';
-
-interface CalculatorFormProps {
-  params: CalculationParams;
-  onParamsChange: (params: CalculationParams) => void;
-  selectedProviders: Provider[];
-  onProvidersChange: (providers: Provider[]) => void;
-}
+import { ICalculatorForm, Provider, Currency } from '../types';
 
 const providers: Provider[] = ['OpenAI', 'Anthropic', 'Groq'];
 const currencies: Currency[] = ['USD', 'INR'];
@@ -17,9 +9,12 @@ export default function CalculatorForm({
   onParamsChange,
   selectedProviders,
   onProvidersChange,
-}: CalculatorFormProps) {
+  darkMode
+}: ICalculatorForm) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
+    <div className={`bg-white p-6 rounded-lg shadow-sm ${
+      darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
+    }`}>
       <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-6">
         <h2 className="text-xl font-semibold text-gray-900 whitespace-nowrap">
           Calculation Parameters

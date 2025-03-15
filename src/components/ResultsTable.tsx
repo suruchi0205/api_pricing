@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { CalculationParams, Provider } from '../types';
-import { getModelsByProvider } from '../data/modelPricing';
+import { IResultsTable } from '../types';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
+import { getModelsByProvider } from '../data/modelPricing';
 
-interface ResultsTableProps {
-  params: CalculationParams;
-  selectedProviders: Provider[];
-}
-
+// Add the constant for word to token ratio
 const WORD_TO_TOKEN_RATIO = 1.333;
 
-export default function ResultsTable({ params, selectedProviders }: ResultsTableProps) {
+export default function ResultsTable({
+  params,
+  selectedProviders,
+  darkMode
+}: IResultsTable) {
   const [sortField, setSortField] = useState<'name' | 'inputCost' | 'outputCost' | 'totalCost'>('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
@@ -77,7 +77,9 @@ export default function ResultsTable({ params, selectedProviders }: ResultsTable
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
+    <div className={`p-6 rounded-lg shadow-sm ${
+      darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
+    }`}>
       <h2 className="text-lg font-semibold mb-4">Cost Comparison</h2>
       <div className="text-sm text-gray-500 mb-4">
         {params.useTokens 
